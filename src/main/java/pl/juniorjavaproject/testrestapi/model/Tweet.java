@@ -1,4 +1,4 @@
-package pl.juniorjavaproject.testrestapi.domain.model;
+package pl.juniorjavaproject.testrestapi.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,9 @@ public class Tweet {
     @Column(name = "created_on", nullable = false, updatable = false)
     private LocalDateTime createdOn;
 
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
+
     @Column(nullable = false)
     private String tweetTitle;
 
@@ -32,6 +35,11 @@ public class Tweet {
     @PrePersist
     public void setCreatedOn() {
         createdOn = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void setUpdatedOn() {
+        updatedOn = LocalDateTime.now();
     }
 
 }

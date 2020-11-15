@@ -1,6 +1,5 @@
-package pl.juniorjavaproject.testrestapi.domain.model;
+package pl.juniorjavaproject.testrestapi.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,5 +26,6 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-
+    @Column(nullable = false)
+    private String password;
 }
