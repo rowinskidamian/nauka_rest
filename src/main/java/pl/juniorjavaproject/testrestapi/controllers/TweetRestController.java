@@ -1,28 +1,35 @@
 package pl.juniorjavaproject.testrestapi.controllers;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.juniorjavaproject.testrestapi.dto.TweetDTO;
-import pl.juniorjavaproject.testrestapi.exceptions.IdsAreNotTheSameException;
+import pl.juniorjavaproject.testrestapi.exceptions.ElementNotFoundException;
 import pl.juniorjavaproject.testrestapi.services.TweetService;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/tweets")
 public class TweetRestController {
 
     private final TweetService tweetService;
 
+    public TweetRestController(TweetService tweetService) {
+        this.tweetService = tweetService;
+    }
+
     @GetMapping
-    public ResponseEntity getAll() {
-        List<TweetDTO> tweetDTOList = tweetService.getAll();
+    public ResponseEntity<List<TweetDTO>> list() {
+        List<TweetDTO> tweetDTOList = tweetService.list();
         if (!tweetDTOList.isEmpty()) {
             return ResponseEntity.ok(tweetDTOList);
         } else {
@@ -31,13 +38,13 @@ public class TweetRestController {
     }
 
     @PostMapping
-    public ResponseEntity saveTweet(@Valid @RequestBody TweetDTO tweetDTO) {
-        return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.saveTweet(tweetDTO))).build();
+    public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO) {
+        return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.read(tweetDTO))).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getOne(@PathVariable long id) {
-        TweetDTO tweetDTO = tweetService.findTweetById(id);
+    public ResponseEntity<TweetDTO> read(@PathVariable Long id) {
+        TweetDTO tweetDTO = tweetService.read(id);
         if (tweetDTO != null) {
             return ResponseEntity.ok(tweetDTO);
         } else {
@@ -46,15 +53,15 @@ public class TweetRestController {
     }
 
     @PutMapping("/{id}")
-    public void editTweet(@PathVariable long id, @Valid @RequestBody TweetDTO tweetDTO) {
-        if (tweetDTO.getId() != id) {
-            throw new IdsAreNotTheSameException("ID przekazanego elementu i ID z uri nie są takie same");
-        }
-        tweetService.editTweet(tweetDTO);
+    public ResponseEntity<TweetDTO> update(@PathVariable Long id, @Valid @RequestBody TweetDTO tweetDTO)
+            throws ElementNotFoundException {
+        TweetDTO updatedTweetDTO = tweetService.update(id, tweetDTO);
+        return ResponseEntity.ok(updatedTweetDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTweet(@PathVariable long id) {
-        tweetService.deleteTweet(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws ElementNotFoundException {
+        tweetService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
