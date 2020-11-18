@@ -1,6 +1,7 @@
 package pl.juniorjavaproject.testrestapi.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.juniorjavaproject.testrestapi.dto.TweetDTO;
 import pl.juniorjavaproject.testrestapi.exceptions.ElementNotFoundException;
+import pl.juniorjavaproject.testrestapi.services.TweetManagerService;
 import pl.juniorjavaproject.testrestapi.services.TweetService;
 
 import javax.validation.Valid;
@@ -22,9 +24,11 @@ import java.util.List;
 public class TweetRestController {
 
     private final TweetService tweetService;
+    private final TweetManagerService tweetManagerService;
 
-    public TweetRestController(TweetService tweetService) {
+    public TweetRestController(TweetService tweetService, TweetManagerService tweetManagerService) {
         this.tweetService = tweetService;
+        this.tweetManagerService = tweetManagerService;
     }
 
     @GetMapping
@@ -38,18 +42,20 @@ public class TweetRestController {
     }
 
     @PostMapping
-    public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO) {
+    public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO, BindingResult result) {
+        if(result.hasErrors()){
+
+        }
         return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.read(tweetDTO))).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TweetDTO> read(@PathVariable Long id) {
-        TweetDTO tweetDTO = tweetService.read(id);
-        if (tweetDTO != null) {
-            return ResponseEntity.ok(tweetDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<TweetDTO> read(@PathVariable Long id, BindingResult result) {
+       if(result.hasErrors()){
+
+       }
+
+        return tweetManagerService.read(id);
     }
 
     @PutMapping("/{id}")
