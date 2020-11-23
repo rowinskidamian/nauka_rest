@@ -3,8 +3,8 @@ package pl.juniorjavaproject.testrestapi.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.juniorjavaproject.testrestapi.model.User;
-import pl.juniorjavaproject.testrestapi.repositories.UserRepository;
+import pl.juniorjavaproject.testrestapi.domain.model.User;
+import pl.juniorjavaproject.testrestapi.domain.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 

@@ -3,7 +3,7 @@ package pl.juniorjavaproject.testrestapi.services;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import pl.juniorjavaproject.testrestapi.dto.TweetDTO;
+import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
 
 @Service
 public class TweetManagerService {

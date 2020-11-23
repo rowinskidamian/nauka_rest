@@ -2,12 +2,12 @@ package pl.juniorjavaproject.testrestapi.services;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import pl.juniorjavaproject.testrestapi.dto.TweetDTO;
-import pl.juniorjavaproject.testrestapi.dto.UserDTO;
+import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
+import pl.juniorjavaproject.testrestapi.domain.dto.UserDTO;
 import pl.juniorjavaproject.testrestapi.exceptions.ElementNotFoundException;
 import pl.juniorjavaproject.testrestapi.mapper.TweetMapper;
-import pl.juniorjavaproject.testrestapi.model.Tweet;
-import pl.juniorjavaproject.testrestapi.repositories.TweetRepository;
+import pl.juniorjavaproject.testrestapi.domain.model.Tweet;
+import pl.juniorjavaproject.testrestapi.domain.repositories.TweetRepository;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;

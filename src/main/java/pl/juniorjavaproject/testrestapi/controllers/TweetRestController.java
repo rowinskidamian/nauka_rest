@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.juniorjavaproject.testrestapi.dto.TweetDTO;
+import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
 import pl.juniorjavaproject.testrestapi.exceptions.ElementNotFoundException;
 import pl.juniorjavaproject.testrestapi.services.TweetManagerService;
 import pl.juniorjavaproject.testrestapi.services.TweetService;

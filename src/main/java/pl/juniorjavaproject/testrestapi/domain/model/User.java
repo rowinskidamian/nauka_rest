@@ -1,4 +1,4 @@
-package pl.juniorjavaproject.testrestapi.model;
+package pl.juniorjavaproject.testrestapi.domain.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

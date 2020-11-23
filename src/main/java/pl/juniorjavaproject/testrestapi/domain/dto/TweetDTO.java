@@ -1,4 +1,4 @@
-package pl.juniorjavaproject.testrestapi.dto;
+package pl.juniorjavaproject.testrestapi.domain.dto;
 
 import lombok.Data;
 
