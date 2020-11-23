@@ -46,7 +46,7 @@ public class TweetRestController {
         if(result.hasErrors()){
 
         }
-        return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.read(tweetDTO))).build();
+        return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.create(tweetDTO))).build();
     }
 
     @GetMapping("/{id}")

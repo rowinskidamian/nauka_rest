@@ -45,7 +45,7 @@ public class TweetService {
         return tweetDTOSList;
     }
 
-    public Long read(TweetDTO tweetDTO) {
+    public Long create(TweetDTO tweetDTO) {
         Tweet tweet = modelMapper.map(tweetDTO, Tweet.class);
         tweet.setUser(userService.findUserById(tweetDTO.getUserDTO().getId()));
         tweetRepository.save(tweet);
