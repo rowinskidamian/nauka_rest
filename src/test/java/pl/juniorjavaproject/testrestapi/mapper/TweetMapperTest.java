@@ -64,7 +64,6 @@ class TweetMapperTest {
                 () -> assertThat(returnedTweetDTO.getTweetText()).isEqualTo(tweetDTO.getTweetText()),
                 () -> assertThat(returnedTweetDTO.getTweetTitle()).isEqualTo(tweetDTO.getTweetTitle())
         );
-
     }
 
     @Test
@@ -82,6 +81,4 @@ class TweetMapperTest {
                 () -> assertThat(returnedTweet.getTweetTitle()).isEqualTo(tweet.getTweetTitle())
         );
     }
-
-
 }
