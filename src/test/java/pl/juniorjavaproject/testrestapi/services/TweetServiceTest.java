@@ -3,6 +3,9 @@ package pl.juniorjavaproject.testrestapi.services;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -14,19 +17,24 @@ import pl.juniorjavaproject.testrestapi.domain.dto.UserDTO;
 import pl.juniorjavaproject.testrestapi.domain.model.Tweet;
 import pl.juniorjavaproject.testrestapi.domain.model.User;
 import pl.juniorjavaproject.testrestapi.domain.repositories.TweetRepository;
+import pl.juniorjavaproject.testrestapi.exceptions.UserIdNotPresentException;
 import pl.juniorjavaproject.testrestapi.mapper.TweetMapper;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TweetServiceTest {
 
-    @Mock private TweetRepository tweetRepository;
-    @Mock private UserService userService;
+    @Mock
+    private TweetRepository tweetRepository;
+    @Mock
+    private UserService userService;
 
     private Tweet tweet1;
     private Tweet tweet2;
@@ -104,12 +112,12 @@ class TweetServiceTest {
     }
 
     @Test
-    void givenTweetDtoShouldReturnSavedTweetId() {
+    void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException {
         //given
         TweetDTO tweetDtoNoId = new TweetDTO();
         tweetDtoNoId.setUserDTO(userDTO1);
 
-        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user1));
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
         //when
@@ -120,9 +128,9 @@ class TweetServiceTest {
     }
 
     @Test
-    void givenTweetDtoShouldSaveTweetWithTheSameFields() {
+    void givenTweetDtoShouldSaveTweetWithTheSameFields() throws UserIdNotPresentException {
         //given
-        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user1));
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
         //when
@@ -139,6 +147,48 @@ class TweetServiceTest {
                 () -> assertThat(savedTweet.getUser()).isEqualTo(tweet1.getUser())
         );
     }
+
+
+    @ParameterizedTest
+    @MethodSource("dataForUserNotPresentExceptions")
+    void shouldThrowExceptionWhenUserDataNotPresent(TweetDTO tweetDTO) {
+        assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDTO));
+    }
+
+    private static List<Arguments> dataForUserNotPresentExceptions() {
+        TweetDTO tweetDtoNoUser = new TweetDTO();
+        TweetDTO tweetDtoNoUserId = new TweetDTO();
+        tweetDtoNoUserId.setUserDTO(new UserDTO());
+        return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
+    }
+
+     // poniższe metody mogą być przygotowane jak dla  shouldThrowExceptionWhenUserDataNotPresent, ale 2 różne metody
+//    @Test
+//    void givenTweetDtoWithNoUserShouldThrowException()  {
+//        //given
+//        TweetDTO tweetDtoNoUserId = new TweetDTO();
+//
+//        assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDtoNoUserId));
+//    }
+//
+//    @Test
+//    void givenTweetDtoWithUserIdPresentShouldThrowException()  {
+//        //given
+//        TweetDTO tweetDtoNoUserId = new TweetDTO();
+//        tweetDtoNoUserId.setUserDTO(new UserDTO());
+//
+//        assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDtoNoUserId));
+//    }
+
+    //poniższe może być przydatne do testowania czy jest rzucany wyjątek, gdy jest empty optional
+//    when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
+//    when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
+//
+//    //when
+//        tweetService.create(tweetNoUser);
+//
+//    //then
+//        Assertions.shouldHaveThrown(ElementNotFoundException.class);
 
 
 }

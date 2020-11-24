@@ -5,5 +5,4 @@ import pl.juniorjavaproject.testrestapi.domain.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findUserById(long id);
 }
