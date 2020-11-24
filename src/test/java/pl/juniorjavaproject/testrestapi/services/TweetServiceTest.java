@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 class TweetServiceTest {
 
@@ -29,8 +30,11 @@ class TweetServiceTest {
 
     private Tweet tweet1;
     private Tweet tweet2;
+    private Tweet tweet3noId;
+    private Tweet tweet3wId;
     private TweetDTO tweetDTO1;
     private TweetDTO tweetDTO2;
+    private TweetDTO tweetDTO3noId;
     private List<Tweet> tweetList;
     private List<TweetDTO> tweetDTOList;
     private TweetService tweetService;
@@ -65,6 +69,14 @@ class TweetServiceTest {
         tweet2.setTweetText("2text2 2tweet2");
         tweet2.setTweetTitle("2_TITLE_2 2_tweet_2");
 
+        tweet3noId = new Tweet();
+        tweet3noId.setUser(user2);
+        tweet3noId.setTweetText("3text3 3tweet3");
+        tweet3noId.setTweetTitle("3_TITLE_3 3_tweet_3");
+
+        tweet3wId = modelMapper.map(tweet3noId, Tweet.class);
+        tweet3wId.setId(3L);
+
         tweetDTO1 = modelMapper.map(tweet1, TweetDTO.class);
         UserDTO userDTO1 = modelMapper.map(user1, UserDTO.class);
         tweetDTO1.setUserDTO(userDTO1);
@@ -72,6 +84,9 @@ class TweetServiceTest {
         tweetDTO2 = modelMapper.map(tweet2, TweetDTO.class);
         UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
         tweetDTO2.setUserDTO(userDTO2);
+
+        tweetDTO3noId = modelMapper.map(tweet2, TweetDTO.class);
+        tweetDTO3noId.setUserDTO(userDTO2);
 
         tweetList = List.of(tweet1, tweet2);
         tweetDTOList = List.of(tweetDTO1, tweetDTO2);
@@ -82,7 +97,7 @@ class TweetServiceTest {
     @Test
     void shouldReturnTweetDtoList() {
         //given
-        Mockito.when(tweetRepository.findAll()).thenReturn(tweetList);
+        when(tweetRepository.findAll()).thenReturn(tweetList);
 
         //when
         List<TweetDTO> returnedTweetDTOList = tweetService.list();
@@ -98,6 +113,18 @@ class TweetServiceTest {
             softAssertions.assertThat(currentTweetDTO.getTweetTitle()).isEqualTo(compareTweetDTO.getTweetTitle());
         }
         softAssertions.assertAll();
+    }
+
+    @Test
+    void givenTweetDtoShouldReturnSavedTweetId() {
+        //given
+        when(tweetRepository.save(tweet3noId)).thenReturn(tweet3wId);
+
+        //when
+        Long tweet3Id = tweetService.create(tweetDTO3noId);
+
+        //then
+        assertThat(tweet3Id).isEqualTo(tweet3wId.getId());
     }
 
 
