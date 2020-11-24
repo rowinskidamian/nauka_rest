@@ -48,8 +48,8 @@ public class TweetService {
     public Long create(TweetDTO tweetDTO) {
         Tweet tweet = modelMapper.map(tweetDTO, Tweet.class);
         tweet.setUser(userService.findUserById(tweetDTO.getUserDTO().getId()));
-        tweetRepository.save(tweet);
-        return tweet.getId();
+        Tweet savedTweet = tweetRepository.save(tweet);
+        return savedTweet.getId();
     }
 
     public TweetDTO read(long id) {

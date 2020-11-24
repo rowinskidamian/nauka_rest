@@ -3,6 +3,7 @@ package pl.juniorjavaproject.testrestapi.services;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -18,26 +19,22 @@ import pl.juniorjavaproject.testrestapi.mapper.TweetMapper;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class TweetServiceTest {
 
-    @Mock
-    private TweetRepository tweetRepository;
-    @Mock
-    private UserService userService;
+    @Mock private TweetRepository tweetRepository;
+    @Mock private UserService userService;
 
     private Tweet tweet1;
     private Tweet tweet2;
-    private Tweet tweet3noId;
-    private Tweet tweet3wId;
     private TweetDTO tweetDTO1;
     private TweetDTO tweetDTO2;
-    private TweetDTO tweetDTO3noId;
     private List<Tweet> tweetList;
     private List<TweetDTO> tweetDTOList;
     private TweetService tweetService;
+    private User user1;
+    private UserDTO userDTO1;
 
     private ModelMapper modelMapper = new ModelMapper();
     @Autowired
@@ -47,7 +44,7 @@ class TweetServiceTest {
     void init() {
         MockitoAnnotations.openMocks(this);
 
-        User user1 = new User();
+        user1 = new User();
         user1.setId(1L);
         user1.setFirstName("Damian");
         user1.setLastName("Rowiński");
@@ -69,24 +66,13 @@ class TweetServiceTest {
         tweet2.setTweetText("2text2 2tweet2");
         tweet2.setTweetTitle("2_TITLE_2 2_tweet_2");
 
-        tweet3noId = new Tweet();
-        tweet3noId.setUser(user2);
-        tweet3noId.setTweetText("3text3 3tweet3");
-        tweet3noId.setTweetTitle("3_TITLE_3 3_tweet_3");
-
-        tweet3wId = modelMapper.map(tweet3noId, Tweet.class);
-        tweet3wId.setId(3L);
-
         tweetDTO1 = modelMapper.map(tweet1, TweetDTO.class);
-        UserDTO userDTO1 = modelMapper.map(user1, UserDTO.class);
+        userDTO1 = modelMapper.map(user1, UserDTO.class);
         tweetDTO1.setUserDTO(userDTO1);
 
         tweetDTO2 = modelMapper.map(tweet2, TweetDTO.class);
         UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
         tweetDTO2.setUserDTO(userDTO2);
-
-        tweetDTO3noId = modelMapper.map(tweet2, TweetDTO.class);
-        tweetDTO3noId.setUserDTO(userDTO2);
 
         tweetList = List.of(tweet1, tweet2);
         tweetDTOList = List.of(tweetDTO1, tweetDTO2);
@@ -118,13 +104,17 @@ class TweetServiceTest {
     @Test
     void givenTweetDtoShouldReturnSavedTweetId() {
         //given
-        when(tweetRepository.save(tweet3noId)).thenReturn(tweet3wId);
+        TweetDTO tweetDtoNoId = new TweetDTO();
+        tweetDtoNoId.setUserDTO(userDTO1);
+
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
+        when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
         //when
-        Long tweet3Id = tweetService.create(tweetDTO3noId);
+        Long tweetReturnedId = tweetService.create(tweetDtoNoId);
 
         //then
-        assertThat(tweet3Id).isEqualTo(tweet3wId.getId());
+        assertThat(tweetReturnedId).isEqualTo(tweet1.getId());
     }
 
 
