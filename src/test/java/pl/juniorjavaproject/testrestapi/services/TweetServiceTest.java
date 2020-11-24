@@ -3,9 +3,9 @@ package pl.juniorjavaproject.testrestapi.services;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import pl.juniorjavaproject.testrestapi.mapper.TweetMapper;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TweetServiceTest {
@@ -115,6 +117,27 @@ class TweetServiceTest {
 
         //then
         assertThat(tweetReturnedId).isEqualTo(tweet1.getId());
+    }
+
+    @Test
+    void givenTweetDtoShouldSaveTweetWithTheSameFields() {
+        //given
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
+        when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
+
+        //when
+        tweetService.create(tweetDTO1);
+        ArgumentCaptor<Tweet> argumentCaptor = ArgumentCaptor.forClass(Tweet.class);
+
+        //then
+        verify(tweetRepository).save(argumentCaptor.capture());
+        Tweet savedTweet = argumentCaptor.getValue();
+
+        assertAll(
+                () -> assertThat(savedTweet.getTweetTitle()).isEqualTo(tweet1.getTweetTitle()),
+                () -> assertThat(savedTweet.getTweetText()).isEqualTo(tweet1.getTweetText()),
+                () -> assertThat(savedTweet.getUser()).isEqualTo(tweet1.getUser())
+        );
     }
 
 
