@@ -13,6 +13,7 @@ import pl.juniorjavaproject.testrestapi.domain.model.User;
 public class TweetMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TweetMapper.class);
 
+
     public TweetDTO from(Tweet tweet) {
         LOGGER.info("from({})", tweet);
         ModelMapper modelMapper = new ModelMapper();
