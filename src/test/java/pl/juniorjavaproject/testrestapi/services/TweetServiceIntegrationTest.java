@@ -31,7 +31,7 @@ public class TweetServiceIntegrationTest {
                 .tweetText("TEST TEXT")
                 .tweetTitle("TITLE TEST")
                 .userDTO(userDTO).build();
-
+        
         //when
         Long tweetId = tweetService.create(tweetDTO);
 
