@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
 import pl.juniorjavaproject.testrestapi.domain.dto.UserDTO;
 import pl.juniorjavaproject.testrestapi.domain.model.Tweet;
 import pl.juniorjavaproject.testrestapi.domain.model.User;
@@ -37,10 +36,10 @@ class TweetServiceTest {
 
     private Tweet tweet1;
     private Tweet tweet2;
-    private TweetDTO tweetDTO1;
-    private TweetDTO tweetDTO2;
+    private pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO1;
+    private pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO2;
     private List<Tweet> tweetList;
-    private List<TweetDTO> tweetDTOList;
+    private List<pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO> tweetDTOList;
     private TweetService tweetService;
     private User user1;
     private UserDTO userDTO1;
@@ -75,11 +74,11 @@ class TweetServiceTest {
         tweet2.setTweetText("2text2 2tweet2");
         tweet2.setTweetTitle("2_TITLE_2 2_tweet_2");
 
-        tweetDTO1 = modelMapper.map(tweet1, TweetDTO.class);
+        tweetDTO1 = modelMapper.map(tweet1, pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO.class);
         userDTO1 = modelMapper.map(user1, UserDTO.class);
         tweetDTO1.setUserDTO(userDTO1);
 
-        tweetDTO2 = modelMapper.map(tweet2, TweetDTO.class);
+        tweetDTO2 = modelMapper.map(tweet2, pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO.class);
         UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
         tweetDTO2.setUserDTO(userDTO2);
 
@@ -95,13 +94,13 @@ class TweetServiceTest {
         when(tweetRepository.findAll()).thenReturn(tweetList);
 
         //when
-        List<TweetDTO> returnedTweetDTOList = tweetService.list();
+        List<pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO> returnedTweetDTOList = tweetService.list();
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();
         for (int i = 0; i < returnedTweetDTOList.size(); i++) {
-            TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
-            TweetDTO compareTweetDTO = tweetDTOList.get(i);
+            pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
+            pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO compareTweetDTO = tweetDTOList.get(i);
             softAssertions.assertThat(currentTweetDTO.getUserDTO()).isEqualTo(compareTweetDTO.getUserDTO());
             softAssertions.assertThat(currentTweetDTO.getId()).isEqualTo(compareTweetDTO.getId());
             softAssertions.assertThat(currentTweetDTO.getTweetText()).isEqualTo(compareTweetDTO.getTweetText());
@@ -113,7 +112,7 @@ class TweetServiceTest {
     @Test
     void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException {
         //given
-        TweetDTO tweetDtoNoId = new TweetDTO();
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDtoNoId = new pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO();
         tweetDtoNoId.setUserDTO(userDTO1);
 
         when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user1));
@@ -150,13 +149,13 @@ class TweetServiceTest {
 
     @ParameterizedTest
     @MethodSource("dataForUserNotPresentExceptions")
-    void shouldThrowExceptionWhenUserDataNotPresent(TweetDTO tweetDTO) {
+    void shouldThrowExceptionWhenUserDataNotPresent(pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO) {
         assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDTO));
     }
 
     private static List<Arguments> dataForUserNotPresentExceptions() {
-        TweetDTO tweetDtoNoUser = new TweetDTO();
-        TweetDTO tweetDtoNoUserId = new TweetDTO();
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDtoNoUser = new pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO();
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDtoNoUserId = new pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO();
         tweetDtoNoUserId.setUserDTO(new UserDTO());
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
     }

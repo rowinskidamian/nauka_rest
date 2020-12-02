@@ -2,7 +2,6 @@ package pl.juniorjavaproject.testrestapi.mapper;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
 import pl.juniorjavaproject.testrestapi.domain.dto.UserDTO;
 import pl.juniorjavaproject.testrestapi.domain.model.Tweet;
 import pl.juniorjavaproject.testrestapi.domain.model.User;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class TweetMapperTest {
 
     private static Tweet tweet;
-    private static TweetDTO tweetDTO;
+    private static pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO;
     private static TweetMapper tweetMapper;
     private static User user;
 
@@ -41,7 +40,7 @@ class TweetMapperTest {
         userDTO.setFirstName(firstName);
         userDTO.setLastName(lastName);
 
-        tweetDTO = new TweetDTO();
+        tweetDTO = new pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO();
         tweetDTO.setUserDTO(userDTO);
         tweetDTO.setId(id);
         tweetDTO.setTweetText(textTweet);
@@ -55,7 +54,7 @@ class TweetMapperTest {
         //given
 
         //when
-        TweetDTO returnedTweetDTO = tweetMapper.from(tweet);
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO returnedTweetDTO = tweetMapper.from(tweet);
 
         //then
         assertAll(

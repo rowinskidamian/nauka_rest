@@ -6,7 +6,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO;
 import pl.juniorjavaproject.testrestapi.domain.dto.UserDTO;
 import pl.juniorjavaproject.testrestapi.domain.model.Tweet;
 import pl.juniorjavaproject.testrestapi.domain.model.User;
@@ -49,7 +48,7 @@ public class TestServiceRepoMockedIntegrTest {
         User user1 = new User();
         user1.setId(userDTO1.getId());
 
-        TweetDTO tweetDTO1 = TweetDTO.builder()
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO1 = pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO.builder()
                 .id(1L)
                 .userDTO(userDTO1)
                 .tweetText("Tweet text 1")
@@ -58,7 +57,7 @@ public class TestServiceRepoMockedIntegrTest {
 
         Tweet tweet1 = tweetMapper.from(tweetDTO1);
 
-        TweetDTO tweetDTO2 = TweetDTO.builder()
+        pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO tweetDTO2 = pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO.builder()
                 .id(2L)
                 .userDTO(userDTO1)
                 .tweetText("tweet text 2222")
@@ -67,13 +66,13 @@ public class TestServiceRepoMockedIntegrTest {
 
         Tweet tweet2 = tweetMapper.from(tweetDTO2);
 
-        List<TweetDTO> listOf2Tweets = List.of(tweetDTO1, tweetDTO2);
+        List<pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO> listOf2Tweets = List.of(tweetDTO1, tweetDTO2);
 
         //when
         when(userRepository.findById(userDTO1.getId())).thenReturn(Optional.of(user1));
         when(tweetRepository.findAll()).thenReturn(List.of(tweet1, tweet2));
 
-        List<TweetDTO> listOfReturnedTweets = tweetService.list();
+        List<pl.juniorjavaproject.testrestapi.domain.dto.TweetDTO> listOfReturnedTweets = tweetService.list();
 
         //then
         assertThat(listOfReturnedTweets).isEqualTo(listOf2Tweets);
