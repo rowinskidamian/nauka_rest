@@ -43,7 +43,7 @@ public class TestServiceRepoMockedIntegrTest {
 
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO1 = pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.builder()
                 .id(1L)
-                .userDTO(userDTO1)
+                .user(userDTO1)
                 .tweetText("Tweet text 1")
                 .tweetTitle("Tweet title 1")
                 .build();
@@ -52,7 +52,7 @@ public class TestServiceRepoMockedIntegrTest {
 
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO2 = pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.builder()
                 .id(2L)
-                .userDTO(userDTO1)
+                .user(userDTO1)
                 .tweetText("tweet text 2222")
                 .tweetTitle("tweet title 222")
                 .build();

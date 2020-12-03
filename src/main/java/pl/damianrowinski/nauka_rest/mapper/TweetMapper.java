@@ -12,14 +12,13 @@ import pl.damianrowinski.nauka_rest.domain.model.User;
 public class TweetMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TweetMapper.class);
 
-
     public pl.damianrowinski.nauka_rest.domain.dto.TweetDTO from(Tweet tweet) {
         LOGGER.info("from({})", tweet);
         ModelMapper modelMapper = new ModelMapper();
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO = modelMapper.map(tweet, pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.class);
         User userToMap = tweet.getUser();
         UserDTO userDTO = modelMapper.map(userToMap, UserDTO.class);
-        tweetDTO.setUserDTO(userDTO);
+        tweetDTO.setUser(userDTO);
         LOGGER.info("from({}) = {}", tweet, tweetDTO);
         return tweetDTO;
     }

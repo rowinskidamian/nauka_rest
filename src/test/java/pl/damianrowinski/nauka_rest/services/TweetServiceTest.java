@@ -44,13 +44,15 @@ class TweetServiceTest {
     private User user1;
     private UserDTO userDTO1;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    private ModelMapper modelMapper;
+
     @Autowired
     private TweetMapper tweetMapper;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
+        modelMapper = new ModelMapper();
 
         user1 = new User();
         user1.setId(1L);
@@ -76,16 +78,16 @@ class TweetServiceTest {
 
         tweetDTO1 = modelMapper.map(tweet1, pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.class);
         userDTO1 = modelMapper.map(user1, UserDTO.class);
-        tweetDTO1.setUserDTO(userDTO1);
+        tweetDTO1.setUser(userDTO1);
 
         tweetDTO2 = modelMapper.map(tweet2, pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.class);
         UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
-        tweetDTO2.setUserDTO(userDTO2);
+        tweetDTO2.setUser(userDTO2);
 
         tweetList = List.of(tweet1, tweet2);
         tweetDTOList = List.of(tweetDTO1, tweetDTO2);
 
-        tweetService = new TweetService(tweetRepository, userService, modelMapper, tweetMapper);
+        tweetService = new TweetService(tweetRepository, userService, tweetMapper);
     }
 
     @Test
@@ -101,7 +103,7 @@ class TweetServiceTest {
         for (int i = 0; i < returnedTweetDTOList.size(); i++) {
             pl.damianrowinski.nauka_rest.domain.dto.TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
             pl.damianrowinski.nauka_rest.domain.dto.TweetDTO compareTweetDTO = tweetDTOList.get(i);
-            softAssertions.assertThat(currentTweetDTO.getUserDTO()).isEqualTo(compareTweetDTO.getUserDTO());
+            softAssertions.assertThat(currentTweetDTO.getUser()).isEqualTo(compareTweetDTO.getUser());
             softAssertions.assertThat(currentTweetDTO.getId()).isEqualTo(compareTweetDTO.getId());
             softAssertions.assertThat(currentTweetDTO.getTweetText()).isEqualTo(compareTweetDTO.getTweetText());
             softAssertions.assertThat(currentTweetDTO.getTweetTitle()).isEqualTo(compareTweetDTO.getTweetTitle());
@@ -113,7 +115,7 @@ class TweetServiceTest {
     void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException, ElementNotFoundException {
         //given
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoId = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
-        tweetDtoNoId.setUserDTO(userDTO1);
+        tweetDtoNoId.setUser(userDTO1);
 
         when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
@@ -156,7 +158,7 @@ class TweetServiceTest {
     private static List<Arguments> dataForUserNotPresentExceptions() {
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoUser = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoUserId = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
-        tweetDtoNoUserId.setUserDTO(new UserDTO());
+        tweetDtoNoUserId.setUser(new UserDTO());
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
     }
 
