@@ -30,4 +30,28 @@ public class RestExceptionsHandler {
 
         return constraintsViolationsDTO;
     }
+
+    @ExceptionHandler({ElementNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String elementNotFoundException(ElementNotFoundException ex) {
+        return getExceptionMessage(ex);
+    }
+
+    @ExceptionHandler({DifferentIdException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String differentIdException(DifferentIdException ex) {
+        return getExceptionMessage(ex);
+    }
+
+    @ExceptionHandler({UserIdNotPresentException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String userNotFoundById(UserIdNotPresentException ex) {
+        return getExceptionMessage(ex);
+    }
+
+    private String getExceptionMessage(Exception ex) {
+        log.error("Raised exception " + ex.getClass().getSimpleName() + ":");
+        log.error(ex.getMessage());
+        return ex.getMessage();
+    }
 }
