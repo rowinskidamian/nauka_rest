@@ -15,6 +15,7 @@ import pl.damianrowinski.nauka_rest.domain.model.Tweet;
 import pl.damianrowinski.nauka_rest.domain.model.User;
 import pl.damianrowinski.nauka_rest.domain.repositories.TweetRepository;
 import pl.damianrowinski.nauka_rest.domain.repositories.UserRepository;
+import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.mapper.TweetMapper;
 import pl.damianrowinski.nauka_rest.services.TweetService;
 
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TweetRestControllerMockMvcTest {
 
     private static final String APP_URL = "/api/tweets";
-    private static final String APP_URL_WITH_ID = "/api/tweets/1";
+    private static final String APP_URL_WITH_ID_1 = "/api/tweets/1";
 
     @Autowired
     private MockMvc mockMvc;
@@ -95,7 +96,7 @@ public class TweetRestControllerMockMvcTest {
     }
 
     @Test
-    void givenTweetDtoShouldReturnSavedTweetData() throws Exception {
+    void givenTweetDtoShouldReturnSavedTweetId() throws Exception {
         long id = 1L;
         TweetDTO tweetDTO = new TweetDTO();
         tweetDTO.setTweetText("TEST TEXT");
@@ -114,6 +115,25 @@ public class TweetRestControllerMockMvcTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", APP_URL+ "/" +id));
+    }
+
+    @Test
+    void givenIdShouldReturnTweetDTO() throws Exception {
+        long id = 1L;
+        TweetDTO tweetDTO = new TweetDTO();
+        tweetDTO.setTweetText("TEST TEXT");
+        tweetDTO.setTweetTitle("TITLE TEST");
+        tweetDTO.setUser(userDTO);
+
+        String tweetJson = objectMapper.writeValueAsString(tweetDTO);
+
+        when(tweetService.read(id)).thenReturn(tweetDTO);
+
+        mockMvc.perform(get(APP_URL_WITH_ID_1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(tweetJson));
+
     }
 
 
