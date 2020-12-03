@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // testing only web layer wo Spring Context
@@ -114,7 +113,7 @@ public class TweetRestControllerMockMvcTest {
                 .content(tweetJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", APP_URL+ "/" +id));
+                .andExpect(header().string("Location", APP_URL + "/" + id));
     }
 
     @Test
@@ -133,9 +132,42 @@ public class TweetRestControllerMockMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(tweetJson));
-
     }
 
+    @Test
+    void givenIdNotPresentShouldReturn404() throws Exception {
+        long id = 1L;
+        when(tweetService.read(id)).thenThrow(new ElementNotFoundException("not found tweet"));
+        mockMvc.perform(get(APP_URL_WITH_ID_1))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenIdTweetDtoShouldReturnUpdatedTweetDTO() throws Exception {
+        long id = 1L;
+        TweetDTO tweetDTO = new TweetDTO();
+        tweetDTO.setTweetText("TEST TEXT");
+        tweetDTO.setTweetTitle("TITLE TEST");
+        tweetDTO.setUser(userDTO);
+        tweetDTO.setId(id);
+
+        String tweetJson = objectMapper.writeValueAsString(tweetDTO);
+
+        when(tweetService.update(id, tweetDTO)).thenReturn(tweetDTO);
+
+        mockMvc.perform(put(APP_URL_WITH_ID_1)
+                .content(tweetJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(tweetJson));
+    }
+
+    @Test
+    void givenIdShouldDeleteAndReturnNoContent() throws Exception {
+        mockMvc.perform(delete(APP_URL_WITH_ID_1))
+                .andExpect(status().isNoContent());
+    }
 
 
 }

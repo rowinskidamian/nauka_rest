@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
 import pl.damianrowinski.nauka_rest.domain.model.Tweet;
 import pl.damianrowinski.nauka_rest.domain.model.User;
@@ -36,10 +37,10 @@ class TweetServiceTest {
 
     private Tweet tweet1;
     private Tweet tweet2;
-    private pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO1;
-    private pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO2;
+    private TweetDTO tweetDTO1;
+    private TweetDTO tweetDTO2;
     private List<Tweet> tweetList;
-    private List<pl.damianrowinski.nauka_rest.domain.dto.TweetDTO> tweetDTOList;
+    private List<TweetDTO> tweetDTOList;
     private TweetService tweetService;
     private User user1;
     private UserDTO userDTO1;
@@ -76,11 +77,11 @@ class TweetServiceTest {
         tweet2.setTweetText("2text2 2tweet2");
         tweet2.setTweetTitle("2_TITLE_2 2_tweet_2");
 
-        tweetDTO1 = modelMapper.map(tweet1, pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.class);
+        tweetDTO1 = modelMapper.map(tweet1, TweetDTO.class);
         userDTO1 = modelMapper.map(user1, UserDTO.class);
         tweetDTO1.setUser(userDTO1);
 
-        tweetDTO2 = modelMapper.map(tweet2, pl.damianrowinski.nauka_rest.domain.dto.TweetDTO.class);
+        tweetDTO2 = modelMapper.map(tweet2, TweetDTO.class);
         UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
         tweetDTO2.setUser(userDTO2);
 
@@ -96,13 +97,13 @@ class TweetServiceTest {
         when(tweetRepository.findAll()).thenReturn(tweetList);
 
         //when
-        List<pl.damianrowinski.nauka_rest.domain.dto.TweetDTO> returnedTweetDTOList = tweetService.list();
+        List<TweetDTO> returnedTweetDTOList = tweetService.list();
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();
         for (int i = 0; i < returnedTweetDTOList.size(); i++) {
-            pl.damianrowinski.nauka_rest.domain.dto.TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
-            pl.damianrowinski.nauka_rest.domain.dto.TweetDTO compareTweetDTO = tweetDTOList.get(i);
+            TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
+            TweetDTO compareTweetDTO = tweetDTOList.get(i);
             softAssertions.assertThat(currentTweetDTO.getUser()).isEqualTo(compareTweetDTO.getUser());
             softAssertions.assertThat(currentTweetDTO.getId()).isEqualTo(compareTweetDTO.getId());
             softAssertions.assertThat(currentTweetDTO.getTweetText()).isEqualTo(compareTweetDTO.getTweetText());
@@ -114,7 +115,7 @@ class TweetServiceTest {
     @Test
     void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException, ElementNotFoundException {
         //given
-        pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoId = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
+        TweetDTO tweetDtoNoId = new TweetDTO();
         tweetDtoNoId.setUser(userDTO1);
 
         when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
@@ -151,13 +152,13 @@ class TweetServiceTest {
 
     @ParameterizedTest
     @MethodSource("dataForUserNotPresentExceptions")
-    void shouldThrowExceptionWhenUserDataNotPresent(pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO) {
+    void shouldThrowExceptionWhenUserDataNotPresent(TweetDTO tweetDTO) {
         assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDTO));
     }
 
     private static List<Arguments> dataForUserNotPresentExceptions() {
-        pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoUser = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
-        pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoUserId = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
+        TweetDTO tweetDtoNoUser = new TweetDTO();
+        TweetDTO tweetDtoNoUserId = new TweetDTO();
         tweetDtoNoUserId.setUser(new UserDTO());
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
     }
