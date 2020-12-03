@@ -1,7 +1,9 @@
 package pl.damianrowinski.nauka_rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -9,9 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
+import pl.damianrowinski.nauka_rest.domain.model.User;
+import pl.damianrowinski.nauka_rest.domain.repositories.UserRepository;
 import pl.damianrowinski.nauka_rest.services.TweetService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,7 +35,25 @@ public class TweetRestControllerMockMvcTest {
     private ObjectMapper objectMapper;
 
     @MockBean
+    private UserRepository userRepository;
+    @MockBean
     private TweetService tweetService;
+
+    private UserDTO userDTO;
+
+    @BeforeEach
+    void init() {
+        User user = new User();
+        user.setEmail("test@email.pl");
+        user.setFirstName("Damian");
+        user.setLastName("Rowiński");
+        user.setPassword("TEST_PASSWORD");
+        user.setId(1L);
+        userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+
+        when(userRepository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user));
+    }
 
     @Test
     void shouldReturnNotFoundStatusWhenListIsEmpty() throws Exception {
@@ -45,9 +68,7 @@ public class TweetRestControllerMockMvcTest {
         tweet.setTweetText("TEST TEXT");
         tweet.setTweetTitle("TITLE TEST");
 
-        UserDTO user = new UserDTO();
-        user.setId(1L);
-        tweet.setUserDTO(user);
+        tweet.setUserDTO(userDTO);
 
         List<TweetDTO> tweetList = List.of(tweet);
         String tweetListJson = objectMapper.writeValueAsString(tweetList);

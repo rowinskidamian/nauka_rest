@@ -1,11 +1,14 @@
 package pl.damianrowinski.nauka_rest.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
+import pl.damianrowinski.nauka_rest.domain.model.User;
+import pl.damianrowinski.nauka_rest.domain.repositories.UserRepository;
 import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
 
@@ -22,12 +25,26 @@ public class TweetServiceIntegrationTest {
     @Autowired
     TweetService tweetService;
 
+    @Autowired
+    UserRepository userRepository;
+
+    private UserDTO userDTO;
+
+    @BeforeEach
+    void init() {
+        User user = new User();
+        user.setEmail("test@email.pl");
+        user.setFirstName("Damian");
+        user.setLastName("Rowiński");
+        user.setPassword("TEST_PASSWORD");
+        User savedUser = userRepository.save(user);
+        userDTO = new UserDTO();
+        userDTO.setId(savedUser.getId());
+    }
+
     @Test
     void givenTweetDtoShouldReturnSavedTweetLongId() throws UserIdNotPresentException, ElementNotFoundException {
         //given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-
         TweetDTO tweetDTO = TweetDTO.builder()
                 .tweetText("TEST TEXT")
                 .tweetTitle("TITLE TEST")
@@ -43,9 +60,6 @@ public class TweetServiceIntegrationTest {
     @Test
     void shouldReturnListOfTweets() throws UserIdNotPresentException, ElementNotFoundException {
         //given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-
         TweetDTO tweetDTO = TweetDTO.builder()
                 .tweetText("TEST TEXT")
                 .tweetTitle("TITLE TEST")
@@ -64,8 +78,6 @@ public class TweetServiceIntegrationTest {
                 () -> assertThat(firstTweetDTO.getTweetText()).isEqualTo(tweetDTO.getTweetText()),
                 () -> assertThat(firstTweetDTO.getUserDTO().getId()).isEqualTo(userDTO.getId())
         );
-
     }
-
 
 }
