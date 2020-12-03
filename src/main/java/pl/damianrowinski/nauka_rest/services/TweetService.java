@@ -47,12 +47,12 @@ public class TweetService {
         return tweetDTOSList;
     }
 
-    public Long create(TweetDTO tweetDTO) throws UserIdNotPresentException {
+    public Long create(TweetDTO tweetDTO) throws UserIdNotPresentException, ElementNotFoundException {
         if (tweetDTO.getUserDTO() == null || tweetDTO.getUserDTO().getId() == null)
             throw new UserIdNotPresentException("Brak podanego id użytkownika.");
         Long id = tweetDTO.getUserDTO().getId();
         Tweet tweet = modelMapper.map(tweetDTO, Tweet.class);
-        Optional<User> optionalUser = userService.findUserById(id);
+        userService.findUserById(id);
         Tweet savedTweet = tweetRepository.save(tweet);
         return savedTweet.getId();
     }

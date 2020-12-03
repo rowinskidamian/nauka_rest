@@ -16,11 +16,11 @@ import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
 import pl.damianrowinski.nauka_rest.domain.model.Tweet;
 import pl.damianrowinski.nauka_rest.domain.model.User;
 import pl.damianrowinski.nauka_rest.domain.repositories.TweetRepository;
+import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
 import pl.damianrowinski.nauka_rest.mapper.TweetMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,12 +110,12 @@ class TweetServiceTest {
     }
 
     @Test
-    void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException {
+    void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException, ElementNotFoundException {
         //given
         pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDtoNoId = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
         tweetDtoNoId.setUserDTO(userDTO1);
 
-        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user1));
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
         //when
@@ -126,9 +126,9 @@ class TweetServiceTest {
     }
 
     @Test
-    void givenTweetDtoShouldSaveTweetWithTheSameFields() throws UserIdNotPresentException {
+    void givenTweetDtoShouldSaveTweetWithTheSameFields() throws UserIdNotPresentException, ElementNotFoundException {
         //given
-        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(user1));
+        when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
         //when

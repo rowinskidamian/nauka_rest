@@ -10,14 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
-class TestRestApiApplicationTest {
+class TestRestApiApplicationNaukaTest {
     //przykład Smoke Test // sanity check // if the app is starting and doing basic functionalities
 
     @Autowired
     private TweetRestController tweetRestController;
-
-    @Autowired
-    private TweetManagerService tweetManagerService;
 
     @Autowired
     private TweetService tweetService;
@@ -26,12 +23,8 @@ class TestRestApiApplicationTest {
     void shouldLoadContextAndCreateControllersAndServices() throws Exception{
         assertAll(
                 () -> assertThat(tweetRestController).isNotNull(),
-                () -> assertThat(tweetManagerService).isNotNull(),
                 () -> assertThat(tweetService).isNotNull()
         );
 
     }
-
-
-
 }

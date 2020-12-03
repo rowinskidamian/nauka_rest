@@ -36,7 +36,7 @@ public class TweetRestController {
 
     @PostMapping
     public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO)
-            throws UserIdNotPresentException {
+            throws UserIdNotPresentException, ElementNotFoundException {
         return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.create(tweetDTO))).build();
     }
 

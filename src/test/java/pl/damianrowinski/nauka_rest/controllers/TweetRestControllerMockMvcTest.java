@@ -31,7 +31,6 @@ public class TweetRestControllerMockMvcTest {
 
     @MockBean
     private TweetService tweetService;
-    @MockBean private TweetManagerService tweetManagerService;
 
     @Test
     void shouldReturnNotFoundStatusWhenListIsEmpty() throws Exception {

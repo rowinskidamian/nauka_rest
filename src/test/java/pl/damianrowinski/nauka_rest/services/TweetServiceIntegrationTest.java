@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
+import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class TweetServiceIntegrationTest {
     TweetService tweetService;
 
     @Test
-    void givenTweetDtoShouldReturnSavedTweetLongId() throws UserIdNotPresentException {
+    void givenTweetDtoShouldReturnSavedTweetLongId() throws UserIdNotPresentException, ElementNotFoundException {
         //given
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -40,7 +41,7 @@ public class TweetServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnListOfTweets() throws UserIdNotPresentException {
+    void shouldReturnListOfTweets() throws UserIdNotPresentException, ElementNotFoundException {
         //given
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
