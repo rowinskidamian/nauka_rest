@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
-import pl.damianrowinski.nauka_rest.services.TweetManagerService;
 import pl.damianrowinski.nauka_rest.services.TweetService;
 
 import javax.validation.Valid;
@@ -24,21 +23,15 @@ import java.util.List;
 public class TweetRestController {
 
     private final TweetService tweetService;
-    private final TweetManagerService tweetManagerService;
 
-    public TweetRestController(TweetService tweetService, TweetManagerService tweetManagerService) {
+    public TweetRestController(TweetService tweetService) {
         this.tweetService = tweetService;
-        this.tweetManagerService = tweetManagerService;
     }
 
     @GetMapping
     public ResponseEntity<List<TweetDTO>> list() {
         List<TweetDTO> tweetDTOList = tweetService.list();
-        if (!tweetDTOList.isEmpty()) {
-            return ResponseEntity.ok(tweetDTOList);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return !tweetDTOList.isEmpty() ? ResponseEntity.ok(tweetDTOList) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -48,8 +41,9 @@ public class TweetRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TweetDTO> read(@PathVariable Long id) {
-        return tweetManagerService.read(id);
+    public ResponseEntity<TweetDTO> read(@PathVariable Long id) throws ElementNotFoundException {
+        TweetDTO tweetDTO = tweetService.read(id);
+        return ResponseEntity.ok(tweetDTO);
     }
 
     @PutMapping("/{id}")

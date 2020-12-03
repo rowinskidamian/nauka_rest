@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
-import pl.damianrowinski.nauka_rest.services.TweetManagerService;
 import pl.damianrowinski.nauka_rest.services.TweetService;
 
 import java.util.List;

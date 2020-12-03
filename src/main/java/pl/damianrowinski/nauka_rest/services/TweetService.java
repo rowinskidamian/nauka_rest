@@ -48,7 +48,7 @@ public class TweetService {
     }
 
     public Long create(TweetDTO tweetDTO) throws UserIdNotPresentException {
-        if(tweetDTO.getUserDTO() == null || tweetDTO.getUserDTO().getId() == null)
+        if (tweetDTO.getUserDTO() == null || tweetDTO.getUserDTO().getId() == null)
             throw new UserIdNotPresentException("Brak podanego id użytkownika.");
         Long id = tweetDTO.getUserDTO().getId();
         Tweet tweet = modelMapper.map(tweetDTO, Tweet.class);
@@ -57,21 +57,18 @@ public class TweetService {
         return savedTweet.getId();
     }
 
-    public TweetDTO read(long id) {
-        Tweet tweet = tweetRepository.findTweetById(id);
-        if (tweet != null) {
-            TweetDTO tweetDTO = modelMapper.map(tweet, TweetDTO.class);
-            UserDTO userDTO = modelMapper.map(tweet.getUser(), UserDTO.class);
-            tweetDTO.setUserDTO(userDTO);
-            return tweetDTO;
-        } else {
-            return null;
-        }
+    public TweetDTO read(long id) throws ElementNotFoundException {
+        Optional<Tweet> tweetOptional = tweetRepository.findById(id);
+        Tweet tweet = tweetOptional.orElseThrow(() -> new ElementNotFoundException("Nie ma elementu o podanym ID."));
+        TweetDTO tweetDTO = modelMapper.map(tweet, TweetDTO.class);
+        UserDTO userDTO = modelMapper.map(tweet.getUser(), UserDTO.class);
+        tweetDTO.setUserDTO(userDTO);
+        return tweetDTO;
     }
 
     public TweetDTO update(Long id, TweetDTO tweetDTO) throws ElementNotFoundException {
         Optional<Tweet> tweetOptional = tweetRepository.findById(id);
-        tweetOptional.orElseThrow(() -> new ElementNotFoundException("Nie ma elementu o podanym ID"));
+        tweetOptional.orElseThrow(() -> new ElementNotFoundException("Nie ma elementu o podanym ID."));
         Tweet tweet = tweetMapper.from(tweetDTO);
         Tweet savedTweet = tweetRepository.save(tweet);
         return tweetMapper.from(savedTweet);
@@ -80,7 +77,7 @@ public class TweetService {
     public void delete(Long id) throws ElementNotFoundException {
         Optional<Tweet> tweetOptional = tweetRepository.findById(id);
         Tweet tweet = tweetOptional.orElseThrow(
-                () -> new ElementNotFoundException("Nie ma elementu o podanym ID"));
+                () -> new ElementNotFoundException("Nie ma elementu o podanym ID."));
         tweetRepository.delete(tweet);
     }
 }

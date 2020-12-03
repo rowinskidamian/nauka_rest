@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.damianrowinski.nauka_rest.controllers.TweetRestController;
-import pl.damianrowinski.nauka_rest.services.TweetManagerService;
 import pl.damianrowinski.nauka_rest.services.TweetService;
 
 import static org.assertj.core.api.Assertions.assertThat;
