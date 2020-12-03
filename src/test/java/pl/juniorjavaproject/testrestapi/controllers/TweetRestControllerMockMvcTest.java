@@ -36,7 +36,7 @@ public class TweetRestControllerMockMvcTest {
 
     @Test
     void shouldReturnNotFoundStatusWhenListIsEmpty() throws Exception {
-        this.mockMvc.perform(get("/api/tweets"))
+        mockMvc.perform(get("/api/tweets"))
                 .andExpect(status().isNotFound());
     }
 
@@ -54,13 +54,17 @@ public class TweetRestControllerMockMvcTest {
         List<TweetDTO> tweetList = List.of(tweet);
         String tweetListJson = objectMapper.writeValueAsString(tweetList);
 
+        System.out.println(tweetListJson);
+
         //when
         when(tweetService.list()).thenReturn(tweetList);
 
         //then
-        this.mockMvc.perform(get("/api/tweets"))
-                .andExpect(status().isNotFound())
+        mockMvc.perform(get("/api/tweets"))
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(tweetListJson));
     }
+
+
 }

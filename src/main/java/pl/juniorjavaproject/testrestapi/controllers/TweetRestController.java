@@ -1,7 +1,6 @@
 package pl.juniorjavaproject.testrestapi.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,20 +42,13 @@ public class TweetRestController {
     }
 
     @PostMapping
-    public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO, BindingResult result)
+    public ResponseEntity<TweetDTO> create(@Valid @RequestBody TweetDTO tweetDTO)
             throws UserIdNotPresentException {
-        if(result.hasErrors()){
-
-        }
         return ResponseEntity.created(URI.create("/api/tweets/" + tweetService.create(tweetDTO))).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TweetDTO> read(@PathVariable Long id, BindingResult result) {
-       if(result.hasErrors()){
-
-       }
-
+    public ResponseEntity<TweetDTO> read(@PathVariable Long id) {
         return tweetManagerService.read(id);
     }
 
