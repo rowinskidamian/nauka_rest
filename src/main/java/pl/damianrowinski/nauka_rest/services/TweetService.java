@@ -2,7 +2,6 @@ package pl.damianrowinski.nauka_rest.services;
 
 import org.springframework.stereotype.Service;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
-import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
 import pl.damianrowinski.nauka_rest.exceptions.ElementNotFoundException;
 import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
 import pl.damianrowinski.nauka_rest.mapper.TweetMapper;
