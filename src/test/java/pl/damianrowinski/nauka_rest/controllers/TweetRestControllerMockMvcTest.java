@@ -75,7 +75,6 @@ public class TweetRestControllerMockMvcTest {
 
     @Test
     void shouldReturnListWithOneTweet() throws Exception {
-        //given
         TweetDTO tweet = new TweetDTO();
         tweet.setTweetText("TEST TEXT");
         tweet.setTweetTitle("TITLE TEST");
@@ -84,10 +83,8 @@ public class TweetRestControllerMockMvcTest {
         List<TweetDTO> tweetList = List.of(tweet);
         String tweetListJson = objectMapper.writeValueAsString(tweetList);
 
-        //when
         when(tweetService.list()).thenReturn(tweetList);
-
-        //then
+        
         mockMvc.perform(get(APP_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
