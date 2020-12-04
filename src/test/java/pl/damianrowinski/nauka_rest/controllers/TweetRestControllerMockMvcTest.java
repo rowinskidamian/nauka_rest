@@ -169,5 +169,4 @@ public class TweetRestControllerMockMvcTest {
                 .andExpect(status().isNoContent());
     }
 
-
 }

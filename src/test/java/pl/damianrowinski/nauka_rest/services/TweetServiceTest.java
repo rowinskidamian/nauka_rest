@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
@@ -34,6 +31,11 @@ class TweetServiceTest {
     private TweetRepository tweetRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private TweetMapper tweetMapper;
+
+    @InjectMocks
+    private TweetService tweetService;
 
     private Tweet tweet1;
     private Tweet tweet2;
@@ -41,14 +43,11 @@ class TweetServiceTest {
     private TweetDTO tweetDTO2;
     private List<Tweet> tweetList;
     private List<TweetDTO> tweetDTOList;
-    private TweetService tweetService;
+
     private User user1;
     private UserDTO userDTO1;
 
     private ModelMapper modelMapper;
-
-    @Autowired
-    private TweetMapper tweetMapper;
 
     @BeforeEach
     void init() {
@@ -88,18 +87,15 @@ class TweetServiceTest {
         tweetList = List.of(tweet1, tweet2);
         tweetDTOList = List.of(tweetDTO1, tweetDTO2);
 
-        tweetService = new TweetService(tweetRepository, userService, tweetMapper);
     }
 
     @Test
     void shouldReturnTweetDtoList() {
-        //given
         when(tweetRepository.findAll()).thenReturn(tweetList);
+        when(tweetMapper.from(ArgumentMatchers.any(Tweet.class))).thenCallRealMethod();
 
-        //when
         List<TweetDTO> returnedTweetDTOList = tweetService.list();
 
-        //then
         SoftAssertions softAssertions = new SoftAssertions();
         for (int i = 0; i < returnedTweetDTOList.size(); i++) {
             TweetDTO currentTweetDTO = returnedTweetDTOList.get(i);
@@ -114,31 +110,24 @@ class TweetServiceTest {
 
     @Test
     void givenTweetDtoShouldReturnSavedTweetId() throws UserIdNotPresentException, ElementNotFoundException {
-        //given
-        TweetDTO tweetDtoNoId = new TweetDTO();
-        tweetDtoNoId.setUser(userDTO1);
-
+        when(tweetMapper.from(tweetDTO1)).thenReturn(tweet1);
         when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
-        //when
-        Long tweetReturnedId = tweetService.create(tweetDtoNoId);
+        Long tweetReturnedId = tweetService.create(tweetDTO1);
 
-        //then
         assertThat(tweetReturnedId).isEqualTo(tweet1.getId());
     }
 
     @Test
     void givenTweetDtoShouldSaveTweetWithTheSameFields() throws UserIdNotPresentException, ElementNotFoundException {
-        //given
+        when(tweetMapper.from(tweetDTO1)).thenReturn(tweet1);
         when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(user1);
         when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
 
-        //when
         tweetService.create(tweetDTO1);
         ArgumentCaptor<Tweet> argumentCaptor = ArgumentCaptor.forClass(Tweet.class);
 
-        //then
         verify(tweetRepository).save(argumentCaptor.capture());
         Tweet savedTweet = argumentCaptor.getValue();
 
@@ -163,7 +152,7 @@ class TweetServiceTest {
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
     }
 
-     // poniższe metody mogą być przygotowane jak dla  shouldThrowExceptionWhenUserDataNotPresent, ale 2 różne metody
+    // poniższe metody mogą być przygotowane jak dla  shouldThrowExceptionWhenUserDataNotPresent, ale 2 różne metody
 //    @Test
 //    void givenTweetDtoWithNoUserShouldThrowException()  {
 //        //given
