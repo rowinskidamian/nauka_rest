@@ -19,6 +19,7 @@ import pl.damianrowinski.nauka_rest.exceptions.UserIdNotPresentException;
 import pl.damianrowinski.nauka_rest.mapper.TweetMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,9 +44,9 @@ class TweetServiceTest {
     private TweetDTO tweetDTO2;
     private List<Tweet> tweetList;
     private List<TweetDTO> tweetDTOList;
-
     private User user1;
     private UserDTO userDTO1;
+    private long id1;
 
     private ModelMapper modelMapper;
 
@@ -54,8 +55,10 @@ class TweetServiceTest {
         MockitoAnnotations.openMocks(this);
         modelMapper = new ModelMapper();
 
+        id1 = 1L;
+
         user1 = new User();
-        user1.setId(1L);
+        user1.setId(id1);
         user1.setFirstName("Damian");
         user1.setLastName("Rowiński");
 
@@ -65,7 +68,7 @@ class TweetServiceTest {
         user2.setLastName("Nowak");
 
         tweet1 = new Tweet();
-        tweet1.setId(1L);
+        tweet1.setId(id1);
         tweet1.setUser(user1);
         tweet1.setTweetText("text1 tweet1");
         tweet1.setTweetTitle("TITLE_1 tweet1");
@@ -77,16 +80,10 @@ class TweetServiceTest {
         tweet2.setTweetTitle("2_TITLE_2 2_tweet_2");
 
         tweetDTO1 = modelMapper.map(tweet1, TweetDTO.class);
-        userDTO1 = modelMapper.map(user1, UserDTO.class);
-        tweetDTO1.setUser(userDTO1);
-
         tweetDTO2 = modelMapper.map(tweet2, TweetDTO.class);
-        UserDTO userDTO2 = modelMapper.map(user2, UserDTO.class);
-        tweetDTO2.setUser(userDTO2);
 
         tweetList = List.of(tweet1, tweet2);
         tweetDTOList = List.of(tweetDTO1, tweetDTO2);
-
     }
 
     @Test
@@ -149,6 +146,58 @@ class TweetServiceTest {
         TweetDTO tweetDtoNoUserId = new TweetDTO();
         tweetDtoNoUserId.setUser(new UserDTO());
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
+    }
+
+    @Test
+    void givenIdShouldReturnTweetDTO() throws ElementNotFoundException {
+        when(tweetRepository.findById(id1)).thenReturn(Optional.of(tweet1));
+        when(tweetMapper.from(tweet1)).thenReturn(tweetDTO1);
+
+        TweetDTO tweetDTO = tweetService.read(id1);
+
+        assertAll(
+                () -> tweetDTO.getId().equals(tweetDTO1.getId()),
+                () -> tweetDTO.getTweetText().equals(tweetDTO1.getTweetText()),
+                () -> tweetDTO.getTweetTitle().equals(tweetDTO1.getTweetTitle()),
+                () -> tweetDTO.getUser().equals(tweetDTO1.getUser())
+        );
+    }
+
+    @Test
+    void givenIdAndTweetDtoShouldSaveTweetAndReturnTweetDTO() throws ElementNotFoundException {
+        when(tweetRepository.findById(id1)).thenReturn(Optional.of(tweet1));
+        when(tweetMapper.from(tweetDTO1)).thenReturn(tweet1);
+        when(tweetRepository.save(tweet1)).thenReturn(tweet1);
+        when(tweetMapper.from(tweet1)).thenReturn(tweetDTO1);
+
+        TweetDTO updatedTweetDTO = tweetService.update(id1, tweetDTO1);
+
+        assertAll(
+                () -> updatedTweetDTO.getId().equals(tweetDTO1.getId()),
+                () -> updatedTweetDTO.getTweetText().equals(tweetDTO1.getTweetText()),
+                () -> updatedTweetDTO.getTweetTitle().equals(tweetDTO1.getTweetTitle()),
+                () -> updatedTweetDTO.getUser().equals(tweetDTO1.getUser())
+        );
+    }
+
+    @Test
+    void givenIdShouldDeleteTweet() throws ElementNotFoundException {
+        when(tweetRepository.findById(id1)).thenReturn(Optional.of(tweet1));
+
+        tweetService.delete(id1);
+        ArgumentCaptor<Tweet> argumentCaptor = ArgumentCaptor.forClass(Tweet.class);
+
+        verify(tweetRepository).delete(argumentCaptor.capture());
+        Tweet deletedTweet = argumentCaptor.getValue();
+
+        assertAll(
+                () -> assertThat(deletedTweet.getId()).isEqualTo(tweet1.getId()),
+                () -> assertThat(deletedTweet.getTweetTitle()).isEqualTo(tweet1.getTweetTitle()),
+                () -> assertThat(deletedTweet.getTweetText()).isEqualTo(tweet1.getTweetText()),
+                () -> assertThat(deletedTweet.getUser()).isEqualTo(tweet1.getUser())
+        );
+
+
     }
 
 
