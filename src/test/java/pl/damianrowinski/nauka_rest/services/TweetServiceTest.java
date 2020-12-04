@@ -138,7 +138,6 @@ class TweetServiceTest {
         );
     }
 
-
     @ParameterizedTest
     @MethodSource("dataForUserNotPresentExceptions")
     void shouldThrowExceptionWhenUserDataNotPresent(TweetDTO tweetDTO) {
@@ -151,34 +150,6 @@ class TweetServiceTest {
         tweetDtoNoUserId.setUser(new UserDTO());
         return List.of(Arguments.of(tweetDtoNoUser), Arguments.of(tweetDtoNoUserId));
     }
-
-    // poniższe metody mogą być przygotowane jak dla  shouldThrowExceptionWhenUserDataNotPresent, ale 2 różne metody
-//    @Test
-//    void givenTweetDtoWithNoUserShouldThrowException()  {
-//        //given
-//        TweetDTO tweetDtoNoUserId = new TweetDTO();
-//
-//        assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDtoNoUserId));
-//    }
-//
-//    @Test
-//    void givenTweetDtoWithUserIdPresentShouldThrowException()  {
-//        //given
-//        TweetDTO tweetDtoNoUserId = new TweetDTO();
-//        tweetDtoNoUserId.setUserDTO(new UserDTO());
-//
-//        assertThrows(UserIdNotPresentException.class, () -> tweetService.create(tweetDtoNoUserId));
-//    }
-
-    //poniższe może być przydatne do testowania czy jest rzucany wyjątek, gdy jest empty optional
-//    when(userService.findUserById(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
-//    when(tweetRepository.save(ArgumentMatchers.any(Tweet.class))).thenReturn(tweet1);
-//
-//    //when
-//        tweetService.create(tweetNoUser);
-//
-//    //then
-//        Assertions.shouldHaveThrown(ElementNotFoundException.class);
 
 
 }

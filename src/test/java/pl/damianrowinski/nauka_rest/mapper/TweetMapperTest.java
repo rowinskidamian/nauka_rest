@@ -2,6 +2,7 @@ package pl.damianrowinski.nauka_rest.mapper;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
 import pl.damianrowinski.nauka_rest.domain.model.Tweet;
 import pl.damianrowinski.nauka_rest.domain.model.User;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class TweetMapperTest {
 
     private static Tweet tweet;
-    private static pl.damianrowinski.nauka_rest.domain.dto.TweetDTO tweetDTO;
+    private static TweetDTO tweetDTO;
     private static TweetMapper tweetMapper;
     private static User user;
 
@@ -40,7 +41,7 @@ class TweetMapperTest {
         userDTO.setFirstName(firstName);
         userDTO.setLastName(lastName);
 
-        tweetDTO = new pl.damianrowinski.nauka_rest.domain.dto.TweetDTO();
+        tweetDTO = new TweetDTO();
         tweetDTO.setUser(userDTO);
         tweetDTO.setId(id);
         tweetDTO.setTweetText(textTweet);
@@ -51,12 +52,8 @@ class TweetMapperTest {
 
     @Test
     void givenTweetShouldReturnTweetDtoWithDtoFieldsMappedFromTweet() {
-        //given
+        TweetDTO returnedTweetDTO = tweetMapper.from(tweet);
 
-        //when
-        pl.damianrowinski.nauka_rest.domain.dto.TweetDTO returnedTweetDTO = tweetMapper.from(tweet);
-
-        //then
         assertAll(
                 () -> assertThat(returnedTweetDTO.getUser()).isEqualTo(tweetDTO.getUser()),
                 () -> assertThat(returnedTweetDTO.getId()).isEqualTo(tweetDTO.getId()),
@@ -67,12 +64,8 @@ class TweetMapperTest {
 
     @Test
     void givenTweetDtoShouldReturnTweetWithFieldsMappedFromDto() {
-        //given
-
-        //when
         Tweet returnedTweet = tweetMapper.from(tweetDTO);
-
-        //then
+        
         assertAll(
                 () -> assertThat(returnedTweet.getUser()).isEqualTo(tweet.getUser()),
                 () -> assertThat(returnedTweet.getId()).isEqualTo(tweet.getId()),
