@@ -84,7 +84,7 @@ public class TweetRestControllerMockMvcTest {
         String tweetListJson = objectMapper.writeValueAsString(tweetList);
 
         when(tweetService.list()).thenReturn(tweetList);
-        
+
         mockMvc.perform(get(APP_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
