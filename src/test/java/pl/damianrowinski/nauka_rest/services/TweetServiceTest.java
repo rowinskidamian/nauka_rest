@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.damianrowinski.nauka_rest.domain.dto.TweetDTO;
 import pl.damianrowinski.nauka_rest.domain.dto.UserDTO;
 import pl.damianrowinski.nauka_rest.domain.model.Tweet;
