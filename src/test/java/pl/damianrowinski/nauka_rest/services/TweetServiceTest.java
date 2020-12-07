@@ -45,7 +45,6 @@ class TweetServiceTest {
     private List<Tweet> tweetList;
     private List<TweetDTO> tweetDTOList;
     private User user1;
-    private UserDTO userDTO1;
     private long id1;
 
     private ModelMapper modelMapper;
@@ -156,10 +155,10 @@ class TweetServiceTest {
         TweetDTO tweetDTO = tweetService.read(id1);
 
         assertAll(
-                () -> tweetDTO.getId().equals(tweetDTO1.getId()),
-                () -> tweetDTO.getTweetText().equals(tweetDTO1.getTweetText()),
-                () -> tweetDTO.getTweetTitle().equals(tweetDTO1.getTweetTitle()),
-                () -> tweetDTO.getUser().equals(tweetDTO1.getUser())
+                () -> assertThat(tweetDTO.getId()).isEqualTo(tweetDTO1.getId()),
+                () -> assertThat(tweetDTO.getTweetText()).isEqualTo(tweetDTO1.getTweetText()),
+                () -> assertThat(tweetDTO.getTweetTitle()).isEqualTo(tweetDTO1.getTweetTitle()),
+                () -> assertThat(tweetDTO.getUser()).isEqualTo(tweetDTO1.getUser())
         );
     }
 
@@ -173,10 +172,10 @@ class TweetServiceTest {
         TweetDTO updatedTweetDTO = tweetService.update(id1, tweetDTO1);
 
         assertAll(
-                () -> updatedTweetDTO.getId().equals(tweetDTO1.getId()),
-                () -> updatedTweetDTO.getTweetText().equals(tweetDTO1.getTweetText()),
-                () -> updatedTweetDTO.getTweetTitle().equals(tweetDTO1.getTweetTitle()),
-                () -> updatedTweetDTO.getUser().equals(tweetDTO1.getUser())
+                () -> assertThat(updatedTweetDTO.getId()).isEqualTo(tweetDTO1.getId()),
+                () -> assertThat(updatedTweetDTO.getTweetText()).isEqualTo(tweetDTO1.getTweetText()),
+                () -> assertThat(updatedTweetDTO.getTweetTitle()).isEqualTo(tweetDTO1.getTweetTitle()),
+                () -> assertThat(updatedTweetDTO.getUser()).isEqualTo(tweetDTO1.getUser())
         );
     }
 
