@@ -52,8 +52,7 @@ public class TweetService {
     public TweetDTO read(long id) throws ElementNotFoundException {
         Optional<Tweet> tweetOptional = tweetRepository.findById(id);
         Tweet tweet = tweetOptional.orElseThrow(() -> new ElementNotFoundException("Nie ma elementu o podanym ID."));
-        TweetDTO tweetDTO = tweetMapper.from(tweet);
-        return tweetDTO;
+        return tweetMapper.from(tweet);
     }
 
     public TweetDTO update(Long id, TweetDTO tweetDTO) throws ElementNotFoundException {
